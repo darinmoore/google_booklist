@@ -1,12 +1,32 @@
 import requests
 
-def query_item(search_term):
+class Book:
+    """
+    Object to keep track of the following book objects:
+        - book's title
+        - book's author 
+        - publishing company
+    
+    Also provides string formatting for book object
+    """
+    def __init__(self, book):
+        self.title = book['volumeInfo'].get('title', "Unknown")
+        # "Unknown" single item in array to match type of authors
+        self.authors = book['volumeInfo'].get('authors', ["Unknown"])
+        self.publisher = book['volumeInfo'].get('publisher', "Unkown")
+
+    def __repr__(self):
+        book_str = ("Title: "      + self.title + 
+                   "\nAuthors: "   + ', '.join(self.authors) +
+                   "\nPublisher: " +  self.publisher + "\n")
+        return book_str
+
+def query(search_term):
     """
     Makes a query to the Google Books API with the provided search_term
 
     Arguments:
         search_term (str) - string to be searched
-
     Returns:
         JSON representation of search query results
     """    
@@ -18,20 +38,19 @@ def query_item(search_term):
     else:
         return None
 
-def parse_JSON_items(json_results):
+def parse_json(json_results):
     """
-    Parses firts 5 elements of JSON object into an array of the elements containing:
-        - book's title
-        - book's author 
-        - publishing company
-    
+    Parses firts 5 elements of JSON object into a book object
+
     Arguments:
         json_results (JSON object) - JSON representation of search query results
     Returns:
-        Array of strings containing relevant book information
+        List of Book objects created from first 5 entries
     """
-    pass
+    json_books = json_results['items'][0:5]
+    return [Book(json_book) for json_book in json_books]
 
+    
 def create_list():
     """
     Creates a new reading list

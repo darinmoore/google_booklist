@@ -1,5 +1,13 @@
 # Google Books Reading List
 
+## To Run
+
+Tests:
+
+```
+pytest tests.py
+```
+
 ## My Process
 
 1. Research Google Books API / Refresher on JSON object layout
