@@ -1,3 +1,4 @@
 *.sw*
 *.pyc
 *.~README.md
+__pycache__/

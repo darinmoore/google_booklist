@@ -1,3 +1,5 @@
+import requests
+
 def query_item(search_term):
     """
     Makes a query to the Google Books API with the provided search_term
@@ -8,7 +10,13 @@ def query_item(search_term):
     Returns:
         JSON representation of search query results
     """    
-    pass
+    search_results = requests.get(url="https://www.googleapis.com/books/v1/volumes", 
+                                  params={"q" : search_term})
+    # Status Code 200 indicates successful request
+    if search_results.status_code == 200:
+        return search_results.json()
+    else:
+        return None
 
 def parse_JSON_items(json_results):
     """
