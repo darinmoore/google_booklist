@@ -80,7 +80,7 @@ def view_list():
     if not os.path.isfile(BOOKLIST):
         print("Booklist not yet created, please add a book through query")
     else:
-        print() # For better formatting/readability
+        print() # For better formatting/readability of output
         print("=" * 50)
         print("Booklist: \n")
         with open(BOOKLIST, 'r') as f:
@@ -101,7 +101,7 @@ if __name__ == '__main__':
                 print("Invalid request")
                 break
             books = parse_json(books)
-            print() # For better formatting
+            print() # For better output formatting
             # Displays query results to user
             print("-" * 50)
             print("Query Results: \n")

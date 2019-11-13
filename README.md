@@ -12,7 +12,7 @@ Application allows the user to:
 
 ## To Run
 
-Program:
+Program (requires python3):
 
 ```
 python google_booklist.py
