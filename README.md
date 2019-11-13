@@ -24,6 +24,8 @@ Tests:
 pytest tests.py
 ```
 
+Note: Before running pytest you should delete any existing booklists, otherwise the booklist won't match the expected output.
+
 The main program is dependent on *requests* and the tests are dependent on *pytest* library. These can be added with your package manager of choice.
 
 ## My Process
