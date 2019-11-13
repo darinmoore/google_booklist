@@ -49,7 +49,6 @@ class TestAddBook:
         assert (''.join(lines) == 
                 'Title: Mistborn\nAuthors: Brandon Sanderson\nPublisher: Tor Teen\n\n')
 
-
     def test_append_book(self):
         books = parse_json(query("Barbarian Days"))
         add_book_to_list(books[0])

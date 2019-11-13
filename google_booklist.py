@@ -1,3 +1,4 @@
+import os.path
 import requests
 
 BOOKLIST = 'my_booklist.txt'
@@ -76,7 +77,45 @@ def view_list():
     Side Effects:
         Displays reading list to console
     """
-    pass
+    if not os.path.isfile(BOOKLIST):
+        print("Booklist not yet created, please add a book through query")
+    else:
+        print() # For better formatting/readability
+        print("=" * 50)
+        print("Booklist: \n")
+        with open(BOOKLIST, 'r') as f:
+            lines = f.readlines()
+        print(''.join(lines))
+        print("=" * 50)
 
 if __name__ == '__main__':
-    pass
+    while(True):
+        # Presents user with choice of viewing booklist or making a query
+        response = input("Would you like to (v)iew your booklist or make a (q)uery? ").lower()
+        if response == "v" or response == "view":
+            view_list() 
+        elif response == "q" or response == "query":
+            search_term = input("Please input your search term: ")
+            books = query(search_term)
+            if not books:
+                print("Invalid request")
+                break
+            books = parse_json(books)
+            print() # For better formatting
+            # Displays query results to user
+            print("-" * 50)
+            print("Query Results: \n")
+            for i in range(len(books)):
+                print("Entry #{}".format(i+1))
+                print(books[i])
+            print("-" * 50)
+            # Lets user add one of the results from the query to their booklist
+            entry_to_add = input("Which entry would you like to add? (Press ENTER to skip): ")
+            if entry_to_add.isdigit():
+                entry_to_add = int(entry_to_add) - 1 # account for proper index 
+                if entry_to_add in range(len(books)):
+                    add_book_to_list(books[entry_to_add])
+        # If input anything other than v/q exit program
+        else:
+            break
+        
