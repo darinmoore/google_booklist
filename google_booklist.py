@@ -1,5 +1,7 @@
 import requests
 
+BOOKLIST = 'my_booklist.txt'
+
 class Book:
     """
     Object to keep track of the following book objects:
@@ -18,7 +20,7 @@ class Book:
     def __repr__(self):
         book_str = ("Title: "      + self.title + 
                    "\nAuthors: "   + ', '.join(self.authors) +
-                   "\nPublisher: " +  self.publisher + "\n")
+                   "\nPublisher: " +  self.publisher + "\n\n")
         return book_str
 
 def query(search_term):
@@ -50,17 +52,6 @@ def parse_json(json_results):
     json_books = json_results['items'][0:5]
     return [Book(json_book) for json_book in json_books]
 
-    
-def create_list():
-    """
-    Creates a new reading list
-    
-    Returns:
-        Nothing
-    Side Effects:
-        Creates new reading list
-    """
-    pass
 
 def add_book_to_list(book_info):
     """
@@ -73,7 +64,8 @@ def add_book_to_list(book_info):
     Side Effects: 
         Reading list has an added item
     """
-    pass
+    with open(BOOKLIST, 'a+') as f:
+        f.write(str(book_info))
 
 def view_list():
     """

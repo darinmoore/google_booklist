@@ -1,5 +1,7 @@
 import pytest
-from google_books import *
+from google_booklist import *
+
+BOOKLIST = 'my_booklist.txt'
 
 class TestQuery:
     def test_status_code(self):
@@ -22,13 +24,13 @@ class TestParseJSON:
     def test_book_format(self):
         books = parse_json(query('isbn 9780765377135'))
         assert (str(books[0]) == 
-                'Title: Mistborn\nAuthors: Brandon Sanderson\nPublisher: Tor Teen\n')
+                'Title: Mistborn\nAuthors: Brandon Sanderson\nPublisher: Tor Teen\n\n')
         
     def test_multiple_authors(self):
         books = parse_json(query('isbn 9780765377135'))
         assert (str(books[2]) == 
                 "Title: Missy Piggle-Wiggle and the Won't-Walk-the-Dog Cure\n" +
-                "Authors: Ann M. Martin, Annie Parnell\nPublisher: Missy Piggle-Wiggle\n")
+                "Authors: Ann M. Martin, Annie Parnell\nPublisher: Missy Piggle-Wiggle\n\n")
 
     def test_unknown_authors(self):
         result = query("Lord of the Rings")
@@ -36,4 +38,23 @@ class TestParseJSON:
         books = parse_json(result)
         assert (str(books[0]) == 
                 'Title: The Fellowship of the Ring\nAuthors: Unknown\n' + 
-                'Publisher: HarperCollins Publishers\n')
+                'Publisher: HarperCollins Publishers\n\n')
+
+class TestAddBook:
+    def test_add_book(self):
+        books = parse_json(query('isbn 9780765377135'))
+        add_book_to_list(books[0])
+        with open(BOOKLIST, 'r') as f:
+            lines = f.readlines()
+        assert (''.join(lines) == 
+                'Title: Mistborn\nAuthors: Brandon Sanderson\nPublisher: Tor Teen\n\n')
+
+
+    def test_append_book(self):
+        books = parse_json(query("Barbarian Days"))
+        add_book_to_list(books[0])
+        with open(BOOKLIST, 'r') as f:
+            lines = f.readlines()
+        assert (''.join(lines) == 
+                ('Title: Mistborn\nAuthors: Brandon Sanderson\nPublisher: Tor Teen\n\n' + 
+                 'Title: Barbarian Days\nAuthors: William Finnegan\nPublisher: Penguin\n\n'))
