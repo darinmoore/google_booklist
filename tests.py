@@ -1,7 +1,8 @@
+import os
 import pytest
 from google_booklist import *
 
-BOOKLIST = 'my_booklist.txt'
+TEST_BOOKLIST = 'my_test_booklist.txt'
 
 # Tests query() function
 class TestQuery:
@@ -60,8 +61,8 @@ class TestAddBook:
     # Tests that book is added to book list
     def test_add_book(self):
         books = parse_json(query('isbn 9780765377135'))
-        add_book_to_list(books[0])
-        with open(BOOKLIST, 'r') as f:
+        add_book_to_list(books[0], booklist=TEST_BOOKLIST)
+        with open(TEST_BOOKLIST, 'r') as f:
             lines = f.readlines()
         assert (''.join(lines) == 
                 'Title: Mistborn\nAuthors: Brandon Sanderson\nPublisher: Tor Teen\n\n')
@@ -69,9 +70,14 @@ class TestAddBook:
     # Tests that book is appended to list
     def test_append_book(self):
         books = parse_json(query("Barbarian Days"))
-        add_book_to_list(books[0])
-        with open(BOOKLIST, 'r') as f:
+        add_book_to_list(books[0], booklist=TEST_BOOKLIST)
+        with open(TEST_BOOKLIST, 'r') as f:
             lines = f.readlines()
         assert (''.join(lines) == 
                 ('Title: Mistborn\nAuthors: Brandon Sanderson\nPublisher: Tor Teen\n\n' + 
                  'Title: Barbarian Days\nAuthors: William Finnegan\nPublisher: Penguin\n\n'))
+
+# Cleans up side effects from testing
+class TestCleanUp:
+    def test_deletes_test_file(self):
+        os.remove(os.path.join(os.getcwd(), TEST_BOOKLIST))

@@ -63,7 +63,7 @@ def parse_json(json_results):
     return [Book(json_book) for json_book in json_books]
 
 
-def add_book_to_list(book_info):
+def add_book_to_list(book_info, booklist=BOOKLIST):
     """
     Adds a book to the reading list
 
@@ -74,10 +74,10 @@ def add_book_to_list(book_info):
     Side Effects: 
         Reading list has an added item
     """
-    with open(BOOKLIST, 'a+') as f:
+    with open(booklist, 'a+') as f:
         f.write(str(book_info))
 
-def view_list():
+def view_list(booklist=BOOKLIST):
     """
     Prints out current reading list to user
 
@@ -86,13 +86,13 @@ def view_list():
     Side Effects:
         Displays reading list to console
     """
-    if not os.path.isfile(BOOKLIST):
+    if not os.path.isfile(booklist):
         print("Booklist not yet created, please add a book through query")
     else:
         print() # For better formatting/readability of output
         print("=" * 50)
         print("Booklist: \n")
-        with open(BOOKLIST, 'r') as f:
+        with open(booklist, 'r') as f:
             lines = f.readlines()
         print(''.join(lines))
         print("=" * 50)
