@@ -57,6 +57,8 @@ def parse_json(json_results):
     Returns:
         List of Book objects created from first 5 entries
     """
+    if 'items' not in json_results:
+        return None
     json_books = json_results['items'][0:5]
     return [Book(json_book) for json_book in json_books]
 
@@ -98,16 +100,19 @@ def view_list():
 if __name__ == '__main__':
     while(True):
         # Presents user with choice of viewing booklist or making a query
-        response = input("Would you like to (v)iew your booklist or make a (q)uery? ").lower()
+        response = input("Would you like to (v)iew your booklist or make a (s)earch? ").lower()
         if response == "v" or response == "view":
             view_list() 
-        elif response == "q" or response == "query":
+        elif response == "s" or response == "search":
             search_term = input("Please input your search term: ")
             books = query(search_term)
             if not books:
                 print("Invalid request")
                 break
             books = parse_json(books)
+            if not books:
+                print("Invalid request")
+                break
             print() # For better output formatting
             # Displays query results to user
             print("-" * 50)
