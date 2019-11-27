@@ -41,7 +41,7 @@ class TestParseJSON:
     # Tests that parse formats book info correctly with multiple authors
     def test_multiple_authors(self):
         books = parse_json(query('isbn 9780765377135'))
-        assert (str(books[2]) == 
+        assert (str(books[3]) == 
                 "Title: Missy Piggle-Wiggle and the Won't-Walk-the-Dog Cure\n" +
                 "Authors: Ann M. Martin, Annie Parnell\nPublisher: Missy Piggle-Wiggle\n\n")
 

@@ -1,8 +1,11 @@
 import os.path
 import requests
+from dataclasses import dataclass, field
+from typing import List 
 
 BOOKLIST = 'my_booklist.txt'
 
+@dataclass
 class Book:
     """
     Object to keep track of the following book objects:
@@ -12,13 +15,17 @@ class Book:
     
     Also provides string formatting for book object
     """
+    title: str
+    authors: List[str]
+    publisher: str
+
     def __init__(self, book):
         self.title = book['volumeInfo'].get('title', "Unknown")
         # "Unknown" single item in array to match type of authors
         self.authors = book['volumeInfo'].get('authors', ["Unknown"])
         self.publisher = book['volumeInfo'].get('publisher', "Unkown")
 
-    def __repr__(self):
+    def __str__(self):
         book_str = ("Title: "      + self.title + 
                    "\nAuthors: "   + ', '.join(self.authors) +
                    "\nPublisher: " +  self.publisher + "\n\n")
@@ -107,7 +114,7 @@ if __name__ == '__main__':
             print("Query Results: \n")
             for i in range(len(books)):
                 print("Entry #{}".format(i+1))
-                print(books[i])
+                print(str(books[i]))
             print("-" * 50)
             # Lets user add one of the results from the query to their booklist
             entry_to_add = input("Which entry would you like to add? (Press ENTER to skip): ")
