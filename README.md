@@ -10,9 +10,18 @@ Application allows the user to:
 * Save one of the five displayed to a reading list
 * View a reading list with all the books that have been previously saved
 
+## Dependencies
+
+The main program is dependent on *requests* and the tests are dependent on *pytest* library.
+
+```
+pip install pytest
+pip install requests
+```
+
 ## To Run
 
-Program (requires python3):
+Program (requires python3.7):
 
 ```
 python google_booklist.py
@@ -24,9 +33,6 @@ Tests:
 pytest tests.py
 ```
 
-Note: Before running pytest you should delete any existing booklists, otherwise the booklist won't match the expected output.
-
-The main program is dependent on *requests* and the tests are dependent on *pytest* library. These can be added with your package manager of choice.
 
 ## My Process
 
@@ -35,3 +41,5 @@ The main program is dependent on *requests* and the tests are dependent on *pyte
 3. For each of the subproblems I would prototype in the REPL, create unit tests, and then write the function.
 4. Created a diagram of basic flow of the program, relating the different functions together.
 5. Wrote and tested the code that interacted with the user.
+6. Received and reviewed feedback.
+7. Prioritized what to revise and implemented revisions.
