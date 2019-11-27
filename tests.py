@@ -7,22 +7,18 @@ TEST_BOOKLIST = 'my_test_booklist.txt'
 
 # Tests query() function
 class TestQuery:
-    # Tests that successful status code is returned
     def test_status_code(self):
         result = query('War and Peace')
         assert result
     
-    # Tests that unsuccessful status code is returned
     def test_bad_status_code(self):
         result = query('')
         assert not result
 
-    # Test that query result is composed of multiple books
     def test_multiple_items_returned(self):
         result = query('A Song of Ice and Fire')
         assert len(result['items']) > 1
 
-    # Test that query result is reasonable
     def test_query_result_has_title(self):
         title = query('isbn 9780765377135')['items'][0]['volumeInfo']['title']
         assert title == 'Mistborn'
@@ -56,7 +52,7 @@ class TestParseJSON:
 class TestAddBook:
     def test_add_book_to_booklist(self):
         books = parse_json(mistborn_query)
-        add_book_to_list(books[0], booklist=TEST_BOOKLIST)
+        add_book_to_list(0, books, set(), booklist=TEST_BOOKLIST)
         with open(TEST_BOOKLIST, 'r') as f:
             lines = f.readlines()
         assert (''.join(lines) == 
@@ -64,7 +60,7 @@ class TestAddBook:
 
     def test_append_book_to_end_of_booklist(self):
         books = parse_json(barbarian_query)
-        add_book_to_list(books[0], booklist=TEST_BOOKLIST)
+        add_book_to_list(0, books, set(), booklist=TEST_BOOKLIST)
         with open(TEST_BOOKLIST, 'r') as f:
             lines = f.readlines()
         assert (''.join(lines) == 

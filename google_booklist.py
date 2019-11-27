@@ -1,4 +1,5 @@
 import os.path
+import re
 import requests
 from dataclasses import dataclass, field
 from typing import List 
@@ -23,7 +24,7 @@ class Book:
         self.title = book['volumeInfo'].get('title', "Unknown")
         # "Unknown" single item in array to match type of authors
         self.authors = book['volumeInfo'].get('authors', ["Unknown"])
-        self.publisher = book['volumeInfo'].get('publisher', "Unkown")
+        self.publisher = book['volumeInfo'].get('publisher', "Unknown")
 
     def __str__(self):
         book_str = ("Title: "      + self.title + 
@@ -63,19 +64,30 @@ def parse_json(json_results):
     return [Book(json_book) for json_book in json_books]
 
 
-def add_book_to_list(book_info, booklist=BOOKLIST):
+def add_book_to_list(entry_to_add, books, books_in_list, booklist=BOOKLIST):
     """
     Adds a book to the reading list
 
     Arguments:
-        book_info (str) - string containing relevant book information
+        entry_to_add (int) - index of the book the user wants to add to list
+        books (List[Book]) - list of possible books to add
+        books_in_list (dict(str)) - set containing titles of books in booklist
     Returns:
         Nothing
     Side Effects: 
         Reading list has an added item
+        Prints error message if invalid index is provided
     """
-    with open(booklist, 'a+') as f:
-        f.write(str(book_info))
+    if entry_to_add in range(len(books)):
+        new_book = books[entry_to_add]
+        if new_book.title not in books_in_list:
+            with open(booklist, 'a+') as f:
+                f.write(str(books[entry_to_add]))
+            books_in_list.add(new_book.title)
+        else:
+            print("Book already in list")
+    else:
+        print("Invalid index")
 
 def view_list(booklist=BOOKLIST):
     """
@@ -97,7 +109,47 @@ def view_list(booklist=BOOKLIST):
         print(''.join(lines))
         print("=" * 50)
 
+def view_query_results(books):
+    """
+    Prints out query results to user
+
+    Returns:
+        Nothing
+    Side Effects:
+        Displays query results to console
+    """
+    print() # For better output formatting
+    print("-" * 50)
+    print("Query Results: \n")
+    for i in range(len(books)):
+        print("Entry #{}".format(i+1))
+        print(str(books[i]))
+    print("-" * 50)
+
+def populate_books_in_list(books_in_list):
+    """
+    Adds books in booklist to a set to prevent duplicate entries
+
+    Arguments:
+        books_in_list (dict(str)) - set containing titles of books in booklist
+    Returns:
+        None
+    Side Effects:
+        Populates set with books in the booklist
+    """
+    if os.path.isfile(BOOKLIST):
+        with open(BOOKLIST, 'r') as f:
+            lines = f.readlines()
+        for i in range(len(lines)):
+            if i % 4 == 0:
+                title = lines[i][7:]
+                books_in_list.add(title.strip())
+    
+
 if __name__ == '__main__':
+    books_in_list = set() # Used to prevent duplicate entries
+    populate_books_in_list(books_in_list)
+
     while(True):
         # Presents user with choice of viewing booklist or making a query
         response = input("Would you like to (v)iew your booklist or make a (s)earch? ").lower()
@@ -106,27 +158,21 @@ if __name__ == '__main__':
         elif response == "s" or response == "search":
             search_term = input("Please input your search term: ")
             books = query(search_term)
+            # Make sure query is successful
             if not books:
                 print("Invalid request")
                 break
+            # Make sure query has books to parse
             books = parse_json(books)
             if not books:
-                print("Invalid request")
-                break
-            print() # For better output formatting
-            # Displays query results to user
-            print("-" * 50)
-            print("Query Results: \n")
-            for i in range(len(books)):
-                print("Entry #{}".format(i+1))
-                print(str(books[i]))
-            print("-" * 50)
+                print("Search yielded no results")
+                continue
+            view_query_results(books)
             # Lets user add one of the results from the query to their booklist
             entry_to_add = input("Which entry would you like to add? (Press ENTER to skip): ")
-            if entry_to_add.isdigit():
+            if entry_to_add.isdigit(): # Makes sure digit before casting to int
                 entry_to_add = int(entry_to_add) - 1 # account for proper index 
-                if entry_to_add in range(len(books)):
-                    add_book_to_list(books[entry_to_add])
+                add_book_to_list(entry_to_add, books, books_in_list)
         # If input anything other than v/q exit program
         else:
             break
